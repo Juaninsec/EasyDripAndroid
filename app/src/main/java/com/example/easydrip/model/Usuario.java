@@ -5,8 +5,8 @@ import androidx.annotation.NonNull;
 public class Usuario {
     private String nombre;
     private String apellidos;
-    private String nick;
-    private String contraseña;
+    private  String nick;
+    private  String contraseña;
     private String correo;
 
     public Usuario() {
@@ -41,7 +41,7 @@ public class Usuario {
         return nick;
     }
 
-    public void setNick(String nick) {
+    public  void setNick(String nick) {
         this.nick = nick;
     }
 

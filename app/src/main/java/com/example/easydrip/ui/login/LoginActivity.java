@@ -4,8 +4,8 @@ import android.app.Activity;
 
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-
 import android.content.Context;
+
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -23,7 +23,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.easydrip.MainActivity;
 import com.example.easydrip.R;
+import com.example.easydrip.model.Usuario;
 import com.example.easydrip.ui.login.LoginViewModel;
 import com.example.easydrip.ui.login.LoginViewModelFactory;
 import com.example.easydrip.databinding.ActivityLoginBinding;
@@ -33,6 +35,8 @@ import io.response.ApiService;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -41,9 +45,11 @@ public class LoginActivity extends AppCompatActivity {
     Button Vuelta;
     Button ConfirmarRegistro;
     Button Loguin;
+
+    Button ConfirmarLogin;
     EditText Nombre,Apellidos,Nick,Contraseña,Contraseña2,email;
 
-    Call<String> call = ApiService.loginUsuario("nombre_de_usuario", "contraseña");
+
 
 
     @Override
@@ -53,6 +59,8 @@ public class LoginActivity extends AppCompatActivity {
 
         Loguin=findViewById(R.id.btnLoguearse);
         Loguin.setVisibility(View.VISIBLE);
+        ConfirmarLogin=findViewById(R.id.btnSubmitLogin);
+        ConfirmarLogin.setVisibility(View.INVISIBLE);
         Registro=findViewById(R.id.btnRegistrarse);
         Registro.setVisibility(View.VISIBLE);
         Vuelta=findViewById(R.id.volver);
@@ -180,9 +188,38 @@ public class LoginActivity extends AppCompatActivity {
         Registro.setVisibility(View.INVISIBLE);
         Nick.setText("");
         Contraseña.setText("");
+        ConfirmarLogin.setVisibility(View.VISIBLE);
 
 
+    }
+    public void loginAPI(String nick,String contraseña){
+        Retrofit retrofit= new Retrofit.Builder().baseUrl("http://localhost:8086/")
+                .addConverterFactory(GsonConverterFactory.create()).build();
 
+        ApiService apiService = retrofit.create(ApiService.class);
+        Call<Usuario> call=apiService.loginUsuario(nick,contraseña);
+        call.enqueue(new Callback<Usuario>() {
+            @Override
+            public void onResponse(Call<Usuario> call, Response<Usuario> response) {
+                try {
+
+                    if(response.isSuccessful()){
+                        Usuario user=response.body();
+                       // Usuario.setNick(Nick.getText().toString());
+
+
+                    }
+
+                }catch (Exception ex){
+                    Toast.makeText(LoginActivity.this, ex.getMessage(), Toast.LENGTH_SHORT);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Usuario> call, Throwable t) {
+
+            }
+        });
     }
 
     public void formConfirmarRegistrarse(View view) {
@@ -231,6 +268,10 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void btnAccederContenido(View view) {
+
+    }
+
+    public void formConfirmarLogin(View view) {
 
     }
 
