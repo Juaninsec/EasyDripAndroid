@@ -6,18 +6,18 @@ public class Usuario {
     private String nombre;
     private String apellidos;
     private  String nick;
-    private  String contraseña;
+    private  String contrasena;
     private String correo;
 
     public Usuario() {
 
     }
 
-    public Usuario(String nombre, String apellidos, String nick, String contraseña, String correo) {
+    public Usuario(String nombre, String apellidos, String nick, String contrasena, String correo) {
         this.nombre = nombre;
         this.apellidos = apellidos;
         this.nick = nick;
-        this.contraseña = contraseña;
+        this.contrasena = contrasena;
         this.correo = correo;
     }
 
@@ -46,11 +46,11 @@ public class Usuario {
     }
 
     public String getContraseña() {
-        return contraseña;
+        return contrasena;
     }
 
     public void setContraseña(String contraseña) {
-        this.contraseña = contraseña;
+        this.contrasena = contraseña;
     }
 
     public String getCorreo() {

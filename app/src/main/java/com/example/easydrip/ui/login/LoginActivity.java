@@ -6,6 +6,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import android.content.Context;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -14,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -31,7 +33,11 @@ import com.example.easydrip.ui.login.LoginViewModelFactory;
 import com.example.easydrip.databinding.ActivityLoginBinding;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.io.IOException;
+
+import io.response.ApiAdapter;
 import io.response.ApiService;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -49,6 +55,9 @@ public class LoginActivity extends AppCompatActivity {
     Button ConfirmarLogin;
     EditText Nombre,Apellidos,Nick,Contraseña,Contraseña2,email;
 
+
+    String NombreForm; String ApellidosForm; String NickForm; String ContraseñaForm;
+    String Contraseña2Form; String emailForm;
 
 
 
@@ -83,14 +92,14 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
-        String NombreForm; String ApellidosForm; String NickForm; String ContraseñaForm;
-        String Contraseña2Form; String emailForm;
+
 
 
        loginViewModel = new ViewModelProvider(this, new LoginViewModelFactory())
                 .get(LoginViewModel.class);
 
-        /*
+
+       /*
         loginViewModel.getLoginFormState().observe(this, new Observer<LoginFormState>() {
             @Override
             public void onChanged(@Nullable LoginFormState loginFormState) {
@@ -265,6 +274,55 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(),NickForm + ApellidosForm + ContraseñaForm + Contraseña2Form + NombreForm + emailForm, Toast.LENGTH_SHORT);
 
         toast1.show();
+    }
+
+    private void registrarUsuario() {
+        NickForm = Nick.getText().toString().trim();
+        ContraseñaForm = Contraseña.getText().toString().trim();
+        NickForm = Nick.getText().toString().trim();
+        ContraseñaForm = Contraseña.getText().toString().trim();
+        NickForm = Nick.getText().toString().trim();
+
+        if (NickForm.isEmpty()) {
+            Nick.setError("El Nick es obligatorio");
+            Nick.requestFocus();
+            return;
+        } else if (ContraseñaForm.isEmpty()) {
+            Contraseña.setError("La contraseña es obligatoria");
+            Contraseña.requestFocus();
+            return;
+        }
+        String nick =Nick.getText().toString().trim();
+        String contraseña =Contraseña.getText().toString().trim() ;
+        Call<ResponseBody> call = ApiAdapter
+                .getInstance()
+                .getAPI()
+                .loginUsuario(new Usuario(NickForm, ContraseñaForm));
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                String s = "";
+                try {
+                    s = response.body().string();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if(s.equals("SUCCESS")) {
+                    Toast.makeText(LoginActivity.this, "Registrado correctamente, ahora inicia sesión", Toast.LENGTH_LONG).show();
+                    startActivity(new Intent(LoginActivity.this, LoginActivity.class));
+                } else {
+                    Toast.makeText(LoginActivity.this,"Este Usuario ya existe", Toast.LENGTH_LONG).show();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(LoginActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+
     }
 
     public void btnAccederContenido(View view) {
