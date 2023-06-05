@@ -43,6 +43,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import okhttp3.ResponseBody;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -279,9 +280,6 @@ public class LoginActivity extends AppCompatActivity {
     private void registrarUsuario() {
         NickForm = Nick.getText().toString().trim();
         ContraseñaForm = Contraseña.getText().toString().trim();
-        NickForm = Nick.getText().toString().trim();
-        ContraseñaForm = Contraseña.getText().toString().trim();
-        NickForm = Nick.getText().toString().trim();
 
         if (NickForm.isEmpty()) {
             Nick.setError("El Nick es obligatorio");
@@ -293,22 +291,22 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
         String nick =Nick.getText().toString().trim();
-        String contraseña =Contraseña.getText().toString().trim() ;
-        Call<ResponseBody> call = ApiAdapter
+        String contrasena =Contraseña.getText().toString().trim() ;
+        Call<Usuario> call = ApiAdapter
                 .getInstance()
                 .getAPI()
-                .loginUsuario(new Usuario(NickForm, ContraseñaForm));
+                .loginUsuario(nick,contrasena);
 
-        call.enqueue(new Callback<ResponseBody>() {
+        call.enqueue(new Callback<Usuario>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            public void onResponse(Call<Usuario> call, Response<Usuario> response) {
                 String s = "";
                 try {
                     s = response.body().string();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                if(s.equals("SUCCESS")) {
+                if(s.equals(nick)) {
                     Toast.makeText(LoginActivity.this, "Registrado correctamente, ahora inicia sesión", Toast.LENGTH_LONG).show();
                     startActivity(new Intent(LoginActivity.this, LoginActivity.class));
                 } else {
@@ -318,8 +316,8 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Toast.makeText(LoginActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+            public void onFailure(Call<Usuario> call, Throwable s) {
+               Toast.makeText(LoginActivity.this, s.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
 

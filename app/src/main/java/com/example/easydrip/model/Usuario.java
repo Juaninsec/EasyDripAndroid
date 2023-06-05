@@ -3,15 +3,13 @@ package com.example.easydrip.model;
 import androidx.annotation.NonNull;
 
 public class Usuario {
+
     private String nombre;
     private String apellidos;
-    private  String nick;
-    private  String contrasena;
+    private String nick;
+    private String contrasena;
     private String correo;
 
-    public Usuario() {
-
-    }
 
     public Usuario(String nombre, String apellidos, String nick, String contrasena, String correo) {
         this.nombre = nombre;
@@ -61,9 +59,9 @@ public class Usuario {
         this.correo = correo;
     }
 
-    @NonNull
+   /* @NonNull
     @Override
     public String toString() {
         return "Name: " + getNombre() + ", Apellidos: " + getApellidos() + ", Nick: " + getNick() + ", contraseña: " + getContraseña() + ", correo: " + getCorreo();
-    }
+    } */
 }
